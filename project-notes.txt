@@ -1,0 +1,524 @@
+*****Laravel PHP Framework Turtorial - Full Course for Beginners (2019)*****
+By freeCodeCamp and Coder's Tape
+URL: https://www.youtube.com/watch?v=ImtZ5yENzgE
+
+**NOTE: May use PHPStorm as the editor for future Laravel projects.
+
+** Installation and Project Creation Steps
+NOTE: Installation process from video of said project.
+
+    1. Add the Composer PHP dependency manager.
+    2. Install node.js.
+    3. Install Laravel with following command:
+        composer global require laravel/installer
+        NOTE: Make sure to place Composer's system-wide vendor bin directory 
+        in your $PATH so the laravel executable can be located by your system.
+        NOTE: You can query Composer to find where it has set the user 
+        $COMPOSER_HOME directory:
+        composer config --list --global
+    4. Create new project with the following command:
+        laravel new <project name>
+
+** Course Content
+1. Introduction- 0:00
+2. What is Laravel?- 1:14
+3. Installer Laravel- 2:07
+4. First look at the project- 5:30
+5. Intro to PHP Artisan- 7:15
+    **See output commands for Artisan:
+    php artisan
+    NOTE: consider root level commands to be the Available commands. 
+        After that they are considered namespace commands, such as:
+        auth:clear-resets or cache:clear
+
+    **To run the application within the browser the command is:
+        php artisan serve
+    Open the displayed url from the terminal to your browser and 
+        you have a working live server.
+
+    Note that the welcome.blade.php file is the given html template rendering
+        page under the views folder. Also all server-side querying will be 
+        done through controllers.
+
+
+
+6. **Generating login flow with make:auth- 11:42
+        Run: php artisan make:auth
+
+    For Laravel Versions >= 6 the make:auth command doesn't exsist. Instead run:
+        composer require laravel/ui
+        php artisan ui vue --auth
+
+
+
+7. Setting up the front-end with node and npm- 12:04
+        npm install 
+        npm run dev
+    You will never touch the public directory as all the code writing will be 
+    done in the resources directory.
+
+
+
+8. Migrations and Setting Up SQLite- 20:00
+    Create database:
+        vim database/database.sqlite
+    To escape file:
+        Hit Esc and enter :wq
+
+    In .env change DBConnection to sqlite and delete all the other DB_ lines. Then restart application server.
+
+    Then migrate to database with:
+        php artisan migrate
+        This creates a users table, password resets table
+
+
+
+9. Designing the UI from Instagram- 26:00 
+    Create home page logo.
+    In the app.blade.php file change the Laravel link to site name
+    Then add a svg directory to public and tehe svg file to the created directory.
+    Within the navbar link add the svg to src attribute of a img.
+    Note that the root of src starts from the beginning of the public directory.
+
+    Create the structure of the data for the given site. This is under 
+    home.blade.php.
+    There will be 3 columns for each row. The first row will have bootstrap of 
+    col-3, and the other div will have col-9. 
+    We changed the font and background color. Note again that you need to rerun dev 
+    if there's a change to the front-end. The command is: npm run dev.
+
+
+
+10. Adding Username to the Registration Flow- 42:12
+    With this the goal is to add a username to the registration page, which will create the username on the GenJayGram home page for the given user.
+
+    This will be manipulated on the register.blade.php page. Copy the email form and all the email occurances to username.
+
+    In anonther file we have a controller for register data manipulation
+    (register.blade.php). Create a username under the Validator for 
+    a Regisration request. Under the create function also add a 
+    username to create an the new user instance.
+
+    Within the database/migrations directory create_users_table needs
+    to also be changed for username within the Schema(must be unique).
+
+    Background interaction through tinker. With the commands below you
+    will notice the username hasn't been saved.
+    Start: 
+        php artisan tinker
+    See all users:
+        User::all();
+
+    With changes to the database we will need to remake the database.
+    First you refresh to erase everything. NOTE!!- this will erase the
+    entire database:
+        php artisan migrate:fresh
+
+    The next step is under App/User.php add the username to $fillable
+    so the attribute is mass assignable.
+
+    With the application change the top right corner text to say the username instead of the name.  under resources\views\layouts\app.blade.php change Auth::user()->name
+    to Auth::user()->username
+
+
+
+11. Creating the Profiles Controller- 58:35
+
+    As with instagram make the profile viewable from the public even when 
+    signed out. To do this will need to create a new controller. For help with 
+    that we can run:
+        php artisan help make:controller
+    This will tell what options are available for a given command(passing 
+    parameters). 
+
+    The script to run for the Profiles Controller is:
+        php artisan make:controller ProfilesController
+
+    Within the Controller(app\Http\Controllers\ProfilesController.php) add 
+    the index function.
+
+
+
+12. RESTful Resource Controller- 1:04:00
+    In order to have the application request and response handling
+    function in a predictable and percise fashion, Lavavel(plus many
+    Web applications) ulizes RESTFul resource controllers to 
+    communicate with the backend. The actions handled by resource controllers
+    are in the following example for "photo":
+    
+    Verb         Path                  Action        Route Name
+    *******************************************************************************
+    GET          /photo                index         photo.index
+    GET          /photo/create         create        photo.create
+    POST         /photo                store         photo.store
+    GET          /photo/{photo}        show          photo.show
+    GET          /photo/{photo}/edit   edit          photo.edit
+    PUT/PATCH    /photo/{photo}/       update        photo.update
+    DELETE       /photo/{photo}        destroy       photo.destroy
+
+    This convention makes controllers much easier to update, maintain, and keeps
+    the code base much cleaner.
+
+    For project purposes at this time, the show action is needed to request a user 
+    from the database and show there Id within the url route variable.
+
+    Head over to routes\web.php and change the home route to:
+    Route::get('/profile/{user}', 'ProfilesController@index')->name('profile.show');
+
+    Within app\Http\Controllers\ProfilesController.php add the $user variable
+    to arguments for the index function. Then run dd($user); to verify the 
+    controller works. Within the application type /profile/1 from root which
+    should show a 1 to the screen.
+
+    Change the request to dd(User::find($user)); in the index function and 
+    Add a use for the App\User. This links the profile controller to a user 
+    which typing from root /profile/1 displays the JSON object for user 1.
+
+
+
+13. Passing Data to the View- 1:09:00
+    Within app\Http\Controllers\ProfilesController.php change the dd() 
+    function to the $user argument and in the return view() add a user 
+    array('user' => $user).
+
+    Within resources\views\home.blade.php use the mustache syntax(two set of
+    {}) and add {{ $user->username}}.
+
+
+
+14. Adding the Profiles Mode, Migration and Table- 1:10:00
+    In order to grab the other information associated with the account,
+    another controller will be created for the user profile.
+
+    First check the command make:model with:
+        php artisan help make:model
+    This script Creates a new Eloquent model class. Eloquent is what Laravel refers to 
+    the database layer of the framework. Eloquent is very powerful due to it being 
+    database agnostic. Meaning different database types can be used(sqlite, mySQL,
+    PostgreSQL).
+    
+    Create another model(table) called profile with the following script:
+        php artisan make:model Profile -m
+    In turn app\Profile.php is migrated with file:
+    database\migrations\2019_11_18_185022_create_profiles_table.php
+
+    Within the migrated file add to the table title, description, and
+    url. Add a 1:1 relationship within the Schema with:
+        $table->unsignedBigInteger('user_id');
+    Plus add a index for queries and searchability:
+        $table->index('user_id');
+    Always add a index for any foreign key for a given table.
+
+    Now migrate the table to the database:
+        php artisan migrate
+
+
+
+15. Adding Eloquent Relationships- 1:17:30
+
+    Within the app\Profile.php file create a public class of user which returns:
+        $this->belongsTo(User::class)
+
+    Now within the app\User.php file create another public class of profile which
+    returns:
+        $this->hasOne(Profile::class);
+
+    Check the User to Profile relationship:
+    TINKER EXERCISE
+    From the commandline go into Tinker:
+        php artisan tinker
+    Add a $profile class
+        >>> $profile = new \App\Profile();
+    Add title
+        >>> $profile->title = 'Cool Title';
+    Add description
+        >>> $profile->description = 'Description';
+    Add user_id
+        >>> $profile->user_id = 1;
+    Now save
+        >>> $profile->save();
+        This will presist this profile to the database
+    See user through profile
+        >>> $profile->user
+        This fetches the user through the profile
+    See profile
+        >>> $profile
+    Find a user
+        >>> $user = App\User::find(1);
+    See profile through user
+        >>> $user->profile
+    With the given setup the relationship can be fetched forwards and backwards.
+
+    From resources\views\home.blade.php make the title, description, and
+    url dynamic:
+        {{ $user->profile->title }}
+        {{ $user->profile->description }}
+        {{ $user->profile->url }}
+
+    url is undefined and should be empty. However an error is being thrown when debugging.
+    to add a url to the user profile, in tinker write:
+        $user->profile->url = 'freecodecamp.org';
+    Then save the relationship(PUSH-ALL):
+        $user->push();
+
+    
+
+16. Fetching the Record from the Database- 1:28:10
+    In order to prevent the appication from breaking when a profile isn't within
+    the database, the app\Http\Controllers\ProfilesController.php file controller
+    needs to be changed. To do this the find() calling the $user argument
+    will be changed to findOrfail(user). This will call a 404 page upon no 
+    profile within the database.
+
+
+
+17. Create Posts Model with Database Migration- 1:30:00
+    To add Posts for a user, there will be the utilization of a one-to-many
+    database relationship. This will differ from the user to profile 
+    relationsihp which is a one-to-one.
+
+    First make a post model within the terminal:
+        php artisan make:model Post -m 
+
+    Head to the migration page created at:
+        database\migrations\2019_11_19_170021_create_posts_table.php
+    From here add to the Schema:
+        $table->unsignedBigInteger('user_id');
+        $table->string('caption');
+        $table->string('image');
+        $table->index('user_id');
+
+    Now migrate the database changes:
+        php artisan migrate
+
+
+
+18. Connect Posts at Laravel Level to User- 1:33:10
+    Within the app\User.php file add a posts() method. In the method
+    add:
+        return $this->hasMany(Post::class);
+
+    Within the app\Post.php file create the inverse. Add a public
+    function of user() returning:
+        return $this->belongsTo(User::class);
+
+
+
+19. Create a Button for Adding Posts-1:34:35
+    Within resources\views\home.blade.php, in the dic containing
+    username, add a link for posts. To have the link in the far right,
+    add the classes of d-flex, justify-content-between, 
+    align-items-baseline within the div tag.
+
+
+
+20. Create Controller/View for Posts- 1.36:15
+    In the routes\web.php add the needed path of:
+        Route::get('/p', 'PostsController@create');
+
+    In the terminal create the needed controller for route:
+        php artisan make:controller PostsController
+
+    From the app\Http\Controllers\PostsController.php add a create()
+    method that returns view('posts.create').
+
+    Create a new directory called posts within views for organizational
+    purposes.
+
+    NOTE: Naming convention is very import here. The PostsController
+    will always have the same name of view posts, as the create()
+    function will have a create view(which is the main view).
+
+
+
+21. Move the home directory to reflect functionality- 1:43:06
+    In the views create a profiles directory, and put 
+    resources\views\home.blade.php in profiles. For the home.blade.php file,
+    change it to index.blade.php. Plus within the ProfilesController change the
+    view from 'home' to 'profile.index'.
+
+
+
+22. Creating Post Functionality Continued...-1:44:06
+    Copy the resources\views\profiles\index.blade.php file, add it to the
+    resources\views\posts directory, and rename the file create.blade.php.
+    Delete the content within the container div. 
+
+    Add /create to the p route to complete the RESTFul laravel API syntax.
+
+    Path of post functionality so far:
+    There is a route to /p/create in the web.php file pointing to 
+    PostsController@create.
+    Within the PostsController.php a create function is returning a view() of 
+    posts.create.
+    Then all of the content for the posts is created within the 
+    resources\views\posts\create.blade.php file.
+
+
+
+23. Add Content to the create.blade.php File- 1:46:00
+    For the content go to register.blade.php file, copy the name form, and rap 
+    the form in:
+        <div class="row">
+        <div class="col-8 offset-2">
+        </div>
+        </div>
+
+    Change the all the name placeholders to caption, and the label to Post Caption. Remove 
+    the second col after label and the post-right on the label class for style.
+
+    Wrap the content up to div class row in a form tag. Then add a class row with a input
+    image. Copy error block to the image section to the form.
+
+    Add the button to submit the post. Finally add a h1 title of Add New Post
+
+
+
+24. POST the JSON Collection for the given Form- 1:50:05
+    Within register.blade.php, for the form action add "/p", and enctype add 
+    "multipart/form-data", and for method equaling "post".
+
+    In web.php, to create the post add the route of:
+        Route::post('/p', 'PostsController@store'); 
+
+    create a new public method of store(). To check if the function works add a dd() method, such as:
+        dd(request()->all());
+
+    Then test the page. This will throw a 419 Page Expired error. To fix this within the create.blade.php
+    file, within the form add a @csrf blade directive. With the directive the post will work by showing
+    the _token, caption, and image for the JSON collection. The image is wrapped within the UploadedFile
+    class.
+
+
+
+25. Data Validation for Posts- 1:56:23
+    Validate the $data through the PostsController.php file in the store function. For the image 
+    validation also delete the span in the @if blade.
+
+    For the more validation so the image will have to be an image, add extra validation for the 
+    store() function of:
+        'image' => 'required|image'
+        for piping OR:
+        'image' => ['required', 'image']
+        for an array
+
+
+
+26. Store the Post, Exception Handling Issues- 1:59:41
+    Within the PostController, add \App\Post::create($data); inside the store function. NOTE: if there
+    is a field that doesn't need data validation, inside the request()->validate() the field 
+    can be:
+    'anotherField' => '',
+
+    However, the code won't work as a MassAssignmentException is thrown. This is due to a request * can 
+    possibly be executed by a hacker, making it so any value can be passed through $data. Since each 
+    field is being meticulously named, the exception feature can be turned off.
+    Inside the Post.php file, add:
+        protected $guarded = [];
+
+    With this fixed another of an intergrity constraint violation is thrown. This is due to the user_id
+    not being fulled, and technically the user may not be signed in. The answer is to save/create through
+    the relationship.
+
+27. Create Through the Relationship- 2:04:00
+    To get the authenticated user, use the auth() function in PostsController store function:
+        auth()->user()->posts()->create($data);    
+    With this you get rid of:
+        \App\Post::create($data);
+
+    However this will fail again due to the user not being signed-in, post returns null. Simply sign-in,
+    go to the /create/p route, add the caption and img, from this the JSON collection will show on the 
+    screen showing the post worked. 
+
+    To verify, in tinker:
+        Post::all();
+
+    However this is an issue due to not being signed-in. To solve this in the PostsController, add the 
+    constructor:
+        public function __construct() {
+            $this->middleware('auth');
+    }
+    By adding the constructor, if at root you type /p/create when logged out, the login screen appears 
+    and protects the create page.
+
+28. *****Uploading/Saving the Image to the Project- 2:08:00
+    Within the PostsController test image request:
+        dd(request('image'));
+    Now summit another post and a UploadFile class is shown in the browser. With this the JSON collection
+    shown has a lot of function available.
+
+    Create a place to store a image by changing the test to:
+        dd(request('image')->store('uploads', 'public'));
+    This adds the image to the storage directory at:
+        storage\app\public\uploads\SGBTIggqPM28t2jgNhijvEqihgwSARtBdEBYHfYr.jpeg
+
+    By doing this however, the link isn't accessible to the public. In order to change this,
+    this following script needs to be ran once through the life of the given project:
+        php artisan storage:link
+    To view the file, in the browser from /, type:
+        /storage/uploads/<image>
+    *****NOTE: received error when running command storage:link:
+            Local NTFS volumes are required to complete the operation.
+        This seems to be the reason why the picture isn't showing.
+
+    Save the request('image')->store() as a $image.
+
+    change auth chain to:
+        auth()->user()->posts()->create(
+            'caption' => $data['caption'],
+            'image' => $imagePath,
+        );
+
+    Then delete: dd(request()->all()); 
+    And add: return redirect('/profile/' . auth()->user()-<id);
+
+    Now change the image section in index.blade.php:
+        @foreach($user->posts as $post)
+        <div class="col-4">
+         <img src="/storage/{{ $post->image }}" alt="insta image" class="w-100">
+        </div>
+        @endforeach
+
+    NOT WORKING: To erase posts, in tinker:
+        Post::truncate();
+
+    Add href /p/create to create new posts.
+
+
+
+29. Change Pic Order and Resizing Images with Intenvention Image PHP Library- 2:17:00
+    * Change Order
+        In user.php, within posts() return add a call of ->orderBy('created_at', 'DESC').
+
+    * Change Number of Posts
+        In index.blade.php, change the strong tagged posts number to $user->posts->count().
+
+    * Resize Image to Specific Square
+        run script for library:
+            composer require intervention/image
+
+        In PostController add file call:
+            use Intervention\Image\Facades\Image;
+        Then add code:
+            $image = Image::make(public_path("storage/{$imagePath}"))->fit(1200, 1200);
+            $image-> save();
+
+        This fits the image as this is a great tool/package when utilizing thumbnails.
+
+    * See Image and Caption:
+        In index.blade.php wrap img in anchor tag. Use show controller action and set href to:
+            "/p/{{ $post->id }}"
+        In web.php file create route of:
+            Route::get('/p/{post}', 'PostsController@show');
+        In PostController add function:
+            TEST
+            public function show($post) {
+                dd($post);
+            }
+        Copy create.blade.php, paste, and change the name to show.blade.php. Delete information up
+        to container. Type "Show".
+
+    
+
+
+    
