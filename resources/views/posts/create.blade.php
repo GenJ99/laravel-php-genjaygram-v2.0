@@ -1,8 +1,8 @@
 @extends('layouts.app')
 
+<!--POST CREATE FORM -->
 @section('content')
 <div class="container">
-<!-- CREATE POST FORM -->
     <form action="/p" enctype="multipart/form-data" method="post">
         @csrf
 

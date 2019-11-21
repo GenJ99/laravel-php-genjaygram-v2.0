@@ -544,4 +544,67 @@ NOTE: Installation process from video of said project.
         </div>
 
 
+
+31. Editing the Profile**Edit/Add Image not working- 2:31:48
+    In index.blade.php add a edit link under Add New Post. href to:
+        /profile/{{ $user->id }}/edit
+
+    In web.php create route:
+        Route::get('/profile/{edit}', 'ProfilesController@edit')->name('profile.edit');
+    
+    In ProfilesController add function:
+        public function edit(User $user) {
+        return view('profiles.edit', compact('user'));
+    }
+    With this the index function is refactored as well.
+
+    Copy the index.blade.php, paste to profiles directory, and rename edit.blade.php.
+    Then delete content up to container. Grad all the information from the 
+    create.blade.php file as it will be the base for creating the edited content.
+    Change the form action to "/profile{{ user->id }}" then add the blade method
+    of @method('PATCH').
+
+    Add following route to Web.php to update profile:
+        Route::Patch('/profile/{user}', 'ProfilesController@update')->name('profile.update');
+
+    Back in edit.blade.php, change the following:
+        Add New Post title to Edit Post
+        Change "caption" in Caption Section to "title"
+        Copy new Title Section and change title to Description
+        Copy new Title Section again and chnage title to URL
+        Change Post Image to Profile Image
+        Change Add New Post Button to Save Profile Button
+
+    Add turnary for following {{old()}} values:
+        ?? $user->profile->title
+        ?? $user->profile->description
+        ?? $user->profile->url
+    This adds the values in their respective input boxes if already created.
+
+    In the ProfilesController add a public function of update with:
+        $data = request()->validate([
+            'title' => 'required',
+            'description' => 'required',
+            'url' => 'url',
+            'image' => '',
+        ]);
+    Add a dd($data); after function to verify the data in the browser.
+
+    Add a User $user argument to the update function then after data validation:
+        Update Unauthenticated:
+            $user->profile->update($data);
+            return redirect("/profile/{$user->id}");
+    
+    In Profile.php add:
+        protected $guarded = [];
+    This avoids mass assignment. This is OK due to the specified validation of the 
+    $data.
+
+    HOWEVER: The current build of the project will allow unauthenticated users the 
+    ability to update the user. In order to automatically stop this, for the line
+    in the update function:
+        $user->profile->update($data);
+    Change it to:
+        auth()->user->profile->update($data);
+
     

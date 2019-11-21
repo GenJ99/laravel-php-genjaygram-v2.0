@@ -1,6 +1,8 @@
 @extends('layouts.app')
 
 @section('content')
+
+<!-- BASE PROFILE PAGE -->
 <div class="container">
     <div class="row">
         <!-- LEFT COLUMN -->
@@ -22,13 +24,16 @@
                 justify-content-between 
                 align-items-baseline">
             
-            <!-- USER NAME -->
-            <h1>{{$user->username}}</h1>
+                <!-- USER NAME -->
+                <h1>{{$user->username}}</h1>
 
-            <!-- ADD NEW POST -->
-            <a href="/p/create">Add New Post</a>
+                <!-- ADD NEW POST -->
+                <a href="/p/create">Add New Post</a>
             </div>
-            
+
+            <!-- EDIT PROFILE -->
+            <a href="/profile/{{ $user->id }}/edit">Edit Profile</a>
+
             <div class="d-flex">
                 <!-- POSTS COUNT -->
                 <div class="pr-5"><strong>{{ $user->posts->count() }}</strong> posts</div>
