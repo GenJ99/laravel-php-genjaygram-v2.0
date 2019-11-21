@@ -420,6 +420,8 @@ NOTE: Installation process from video of said project.
     not being fulled, and technically the user may not be signed in. The answer is to save/create through
     the relationship.
 
+
+
 27. Create Through the Relationship- 2:04:00
     To get the authenticated user, use the auth() function in PostsController store function:
         auth()->user()->posts()->create($data);    
@@ -440,6 +442,8 @@ NOTE: Installation process from video of said project.
     }
     By adding the constructor, if at root you type /p/create when logged out, the login screen appears 
     and protects the create page.
+
+
 
 28. *****Uploading/Saving the Image to the Project- 2:08:00
     Within the PostsController test image request:
@@ -519,6 +523,25 @@ NOTE: Installation process from video of said project.
         to container. Type "Show".
 
     
+
+    30. Route Model Binding- 2:27:42
+    In PostsController add \App\Post in show function Arguments. This fetches the 
+    post that's clicked(this is shown in the JSON data that comes to screen in the
+    browser). 
+    Now delete the test of dd($post);, and add:
+        return view('posts.show', compact('post'));
+
+    Within show.blade.php add:
+        <div class="row">
+        <div class="col-8">
+            <img src="/storage/{{ $post->image }}" alt="img" class="w-100">
+        </div>
+
+        <div class="col-4">
+            <h3> {{ $post->user->username }} </h3>
+            <p> {{ $post->caption }} </p>
+        </div>
+        </div>
 
 
     
