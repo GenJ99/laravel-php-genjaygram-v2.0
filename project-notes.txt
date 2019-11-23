@@ -376,7 +376,8 @@ NOTE: Installation process from video of said project.
 
 24. POST the JSON Collection for the given Form- 1:50:05
     Within register.blade.php, for the form action add "/p", and enctype add 
-    "multipart/form-data", and for method equaling "post".
+    "multipart/form-data"(due to the adding of files to the page), and for 
+    method equaling "post".
 
     In web.php, to create the post add the route of:
         Route::post('/p', 'PostsController@store'); 
@@ -393,7 +394,7 @@ NOTE: Installation process from video of said project.
 
 25. Data Validation for Posts- 1:56:23
     Validate the $data through the PostsController.php file in the store function. For the image 
-    validation also delete the span in the @if blade.
+    validation also deletes the span in the @if blade.
 
     For the more validation so the image will have to be an image, add extra validation for the 
     store() function of:
@@ -416,7 +417,7 @@ NOTE: Installation process from video of said project.
     Inside the Post.php file, add:
         protected $guarded = [];
 
-    With this fixed another of an intergrity constraint violation is thrown. This is due to the user_id
+    With this fixed another issue of "intergrity constraint violation" is thrown. This is due to the user_id
     not being fulled, and technically the user may not be signed in. The answer is to save/create through
     the relationship.
 
@@ -448,8 +449,7 @@ NOTE: Installation process from video of said project.
 28. *****Uploading/Saving the Image to the Project- 2:08:00
     Within the PostsController test image request:
         dd(request('image'));
-    Now summit another post and a UploadFile class is shown in the browser. With this the JSON collection
-    shown has a lot of function available.
+    Now summit another post and a UploadFile class is shown in the browser. With this the JSON collection shown has a lot of functions available.
 
     Create a place to store a image by changing the test to:
         dd(request('image')->store('uploads', 'public'));
@@ -464,6 +464,9 @@ NOTE: Installation process from video of said project.
     *****NOTE: received error when running command storage:link:
             Local NTFS volumes are required to complete the operation.
         This seems to be the reason why the picture isn't showing.
+        ****** NEW NOTE: 11/23/19:
+            Command works on a NTFS volume, not on the FAT32 file from my USB Storage.
+            
 
     Save the request('image')->store() as a $image.
 
@@ -483,7 +486,7 @@ NOTE: Installation process from video of said project.
         </div>
         @endforeach
 
-    NOT WORKING: To erase posts, in tinker:
+    NOTE: To erase posts, in tinker:
         Post::truncate();
 
     Add href /p/create to create new posts.
@@ -545,7 +548,7 @@ NOTE: Installation process from video of said project.
 
 
 
-31. Editing the Profile**Edit/Add Image not working- 2:31:48
+31. Editing the Profile**Add Post not working- 2:31:48
     In index.blade.php add a edit link under Add New Post. href to:
         /profile/{{ $user->id }}/edit
 
@@ -606,5 +609,12 @@ NOTE: Installation process from video of said project.
         $user->profile->update($data);
     Change it to:
         auth()->user->profile->update($data);
+    *****Throwing an error. May be fixed in next section.
+
+
+
+32. Restricting/Authorizing Actions with a Model Policy- 2:46:46
+
+
 
     

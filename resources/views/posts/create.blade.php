@@ -24,12 +24,6 @@
                             autofocus
                         >
 
-                        <!-- @error('caption')
-                            <span class="invalid-feedback" role="alert">
-                                <strong>{{ $message }}</strong>
-                            </span>
-                        @enderror -->
-
                         @if ($errors->has('caption'))
                             <span class="invalid-feedback" role="alert">
                                 <strong>{{ $errors->first('caption') }}</strong>
@@ -39,10 +33,7 @@
 
                 <!-- IMAGE SECTION -->
                 <div class="row">
-                    <label 
-                        for="image" 
-                        class="col-md-4 col-form-label"
-                    >
+                    <label for="image" class="col-md-4 col-form-label">
                         Post Image
                     </label>
 
@@ -62,6 +53,7 @@
                 <div class="row pt-4">
                     <button class="btn btn-primary">Add New Post</button>
                 </div>
+
             </div>
         </div>
     </form>
