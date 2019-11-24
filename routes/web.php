@@ -17,7 +17,9 @@ Route::get('/', function () {
 
 Auth::routes();
 
-
+// IMPORTANT NOTE: Variable routes should come after static routes. For instance if
+// the /p/create route comes after the /p/{post} route, the create route will throw
+// a 404 error and never be accessed. 
 Route::get('/p/create', 'PostsController@create');
 Route::post('/p', 'PostsController@store'); 
 Route::get('/p/{post}', 'PostsController@show');

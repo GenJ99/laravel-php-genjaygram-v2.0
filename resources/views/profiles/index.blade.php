@@ -28,11 +28,18 @@
                 <h1>{{$user->username}}</h1>
 
                 <!-- ADD NEW POST -->
+                {{-- can directive for Adding a New Post only by the user --}}
+            @can('update', $user->profile)
                 <a href="/p/create">Add New Post</a>
+            @endcan
+
             </div>
 
             <!-- EDIT PROFILE -->
-            <a href="/profile/{{ $user->id }}/edit">Edit Profile</a>
+            {{-- can directive for profile editing only by the user --}}
+            @can('update', $user->profile)
+                <a href="/profile/{{ $user->id }}/edit">Edit Profile</a>
+            @endcan
 
             <div class="d-flex">
                 <!-- POSTS COUNT -->

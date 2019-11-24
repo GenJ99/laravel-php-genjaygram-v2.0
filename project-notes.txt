@@ -614,6 +614,34 @@ NOTE: Installation process from video of said project.
 
 
 32. Restricting/Authorizing Actions with a Model Policy- 2:46:46
+    In order for the Edit Profile feature not to be seen by anyone except the user for
+    the account, a policy needs to be established. A policy is a simple way to 
+    resrict a user from what they can and cannot do with a resource. Policies 
+    are associated with specific models.
+
+    Run the following script for the Profile Model to create a ProfilePolicy:
+        php artisan make:policy ProfilePolicy -m Profile
+
+    Within the ProfilePolicy, add the following in the update function to associate 
+    the user to the user_id:
+        return $user->id == $profile->user_id;
+
+    Within the ProfilesController add the following to the edit and update
+    functions to authorize a update:
+        $this->authorize('update', $user->profile);
+
+    EDIT PROFILE
+    In order for the user to only see the Edit Profile feature, within the 
+    index.blade.php file, wrap the Edit Profile link in a blade directive such as:
+        @can('update', $user->profile)
+            <a href="/profile/{{ $user->id }}/edit">Edit Profile</a>
+        @endcan
+
+    ADD NEW POST
+    For the Add New Post to only be accessed by the user, the process is don't for 
+    the Edti Profile feature:
+    
+
 
 
 
