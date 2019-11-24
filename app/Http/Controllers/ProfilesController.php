@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\User;
 use Illuminate\Http\Request;
+use Intervention\Image\Facades\Image;
 
 class ProfilesController extends Controller
 {
@@ -30,7 +31,27 @@ class ProfilesController extends Controller
             'image' => '',
         ]);
 
-        auth()->user->profile->update($data);
+        // CONDITIONAL STATEMENT FOR IMAGE
+        // If state allows the current image to be used if the image isn't changed
+        // during Editing Profile.
+        if (request('image')) {
+            // Image is stored to $imagePath variable, as the store() method sends it to 
+            // a profile directory, and a local directory(public). ** Look into using this 
+            // with Amazon s3.
+            $imagePath = request('image')->store('profile', 'public');
+
+            //IMAGE RESIZING
+            $image = Image::make(public_path("storage/{$imagePath}"))->fit(1000, 1000);
+            $image->save();
+        }
+
+        // UPDATE PROFILE
+        auth()->user()->profile->update(array_merge(
+            //ARRAY MERGE UPDATE IMAGE
+            $data,
+            ['image' => $imagePath]
+        ));
+
         return redirect("/profile/{$user->id}");
     }
 }

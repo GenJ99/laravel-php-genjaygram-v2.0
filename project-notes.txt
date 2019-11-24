@@ -608,7 +608,7 @@ NOTE: Installation process from video of said project.
     in the update function:
         $user->profile->update($data);
     Change it to:
-        auth()->user->profile->update($data);
+        auth()->user()->profile->update($data);
     *****Throwing an error. May be fixed in next section.
 
 
@@ -642,6 +642,45 @@ NOTE: Installation process from video of said project.
     the Edti Profile feature:
     
 
+
+33. Editing the Profile Image- 2:54:50
+    Inside the ProfilesController, add the following conditional statement to the 
+    update function:
+        $imagePath = request('image')->store('profile', 'public');
+
+        //IMAGE RESIZING
+        $image = Image::make(public_path("storage/{imagePath}"))->fit(1000, 1000);
+        $image->save();
+
+    Now merge the arrays($data,) within the update chain for the image:
+        // UPDATE PROFILE
+        auth()->user->profile->update(array_merge(
+            //ARRAY MERGE UPDATE IMAGE
+            $data,
+            ['image' => $imagePath]
+        ));
+
+    Plus add the directory path:
+        use Intervention\Image\Facades\Image;
+
+    Check if the update worked by using the dd() function after the request conditional: 
+        dd($data);
+
+    Also add the array_merge from the UPDATE PROFILE to the dd() function to check if the right image was 
+    updated:
+        dd(array_merge(
+            //ARRAY MERGE UPDATE IMAGE
+            $data,
+            ['image' => $imagePath]
+        ));
+
+    HOWEVER: A issue arises due to a image not being created within the create_profiles_table for the 
+    given Schema. To fix this within the file add the following to the schema:
+        $table->string('image')->nullable();
+
+    Now we will have to start from scratch with a new migration as we made a change to the create_profiles_table
+    schema. Within the terminal run the following script:
+        php artisan migrate:fresh
 
 
 
