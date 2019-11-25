@@ -682,6 +682,34 @@ NOTE: Installation process from video of said project.
     schema. Within the terminal run the following script:
         php artisan migrate:fresh
 
+34. Automatically Creating a Profile Using Model Events- 3:00:00
+    When a user is created at this point, an exception is thrown:
+        Facade\Ignition\Exceptions\ViewException
+        Trying to get property 'title' of non-object (View: \resources\views\profiles\index.blade.php)
+    This is due to the lack of a profile created upon registration. 
+
+    To combat this within the User.php file an event will be created to create a profile through a boot()
+    method. This method will be called when this model is booted up.
+
+    Add the following to the User.php file:
+        protected static function boot() {
+        parent::boot(); 
+        
+        static::created(function ($user) {
+            $user->profile()->create([
+                'title' => $user->username,
+            ]);
+        });
+    }
+
+    With this upon creating a new user we have a profile, with a fully functional Edit section for the 
+    profile.
+
+    Finally within the index.blade.php file we change the hardcoded image to reflect the edit update. 
+    Change the source image attribute to:
+        src="{{ $user->profile->image }}" 
+
+    
 
 
     
