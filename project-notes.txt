@@ -794,7 +794,67 @@ NOTE: Installation process from video of said project.
 
     This functionality makes it so no image is selected upon clicking the Edit Profile link. In turn
     if the image isn't changed, the profile image stays the same.
-        
+
+
+
+    37. Follow/UnFollow Profiles Using a Vue.js Component
+        Within the index view add a button underneath the username:
+            <div class="d-flex align-items-center pb-3">
+                <!-- USER NAME -->
+                <h1 class="h4">{{$user->username}}</h1>
+
+                <!-- FOLLOW/UNFOLLOW BUTTON -->
+                <button class="btn btn-primary ml-4">Follow</button>
+            </div>
+
+        Now in order to have the follow/unfollow functionality, the Vue.js framework will be 
+        utilized. For the resources\js\components\Example.vue, change the component to FollowButton.vue. 
+        With this in the resources\js\app.js file change the Vue.component to:
+            Vue.component(
+                "follow-button",
+                require("./components/FollowButton.vue").default
+                );
+
+        Now change the button in the index view to:
+            <!-- FOLLOW/UNFOLLOW BUTTON VUE COMPONENT-->
+            <follow-button></follow-button>
+        And in the FollowButton component change the template to:
+            <div>
+                <!-- FOLLOW/UNFOLLOW BUTTON -->
+                <button class="btn btn-primary ml-4">Follow</button>
+            </div>
+
+        NOW in the terminal run the following to have the app watch changes to the comtent:
+            npm run development -- --watch
+
+        Within the button add a click event of @click="followUser, and a test script for the event of:
+            methods: {
+                followUser() {
+                    alert("inside");
+                }
+            }
+
+        Inside the web.php routes add:
+            // Route for the Follow/Unfollow button
+                Route::post('follow/{user}', function() {
+                return ['success'];
+        And change the alert for the Vue followUser() method to utilize the axios package:
+            axios.post("/follow/1").then(response => {
+            alert(response.data);
+      });
+
+        Inside the terminal add a new controller for the Follows button:
+            php artisan make:controller FollowsController
+        Change the Web route to:
+            Route::post('follow/{user}', 'FollowsController@store');
+        Add a prop to the index view FollowButton:
+            user-id="{{ $user->id }}
+        Add the prop to the Vue file script:
+            props: ["userId"],
+        And change the axios.post to:
+            axios.post("/follow/" + this.userId)
+        Now create a store() method for the FollowsController and test the return value:
+            return $user->username; 
 
 
 
