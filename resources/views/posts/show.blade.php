@@ -17,7 +17,7 @@
                     <div class="pr-3">
                         <!-- PROFILE IMAGE -->
                         <img 
-                            src="/storage/{{ $post->user->profile->image }}" 
+                            src="{{ $post->user->profile->profileImage() }}" 
                             alt="profile image" 
                             class="rounded-circle w-100"
                             style="max-width: 40px"

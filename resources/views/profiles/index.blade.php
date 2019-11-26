@@ -9,7 +9,7 @@
         <div class="col-3 p-5">
             <!-- USER IMAGE -->
             <img 
-            src="/storage/{{ $user->profile->image }}" 
+            src="{{ $user->profile->profileImage() }}" 
             alt="My Logo"
             class="rounded-circle"
             style="width: 200px; height: 200px"

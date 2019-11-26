@@ -748,10 +748,54 @@ NOTE: Installation process from video of said project.
                         class="font-weight-bold"> 
                         <a href="/profile/{{ $post->user->id }}">
                             {{ $post->user->username }}
-                        </a>
+                        </a> 
                     </span>
                     {{ $post->caption }}
                 </p>
+
+
+
+36. Default Profile Image- 3:12:20
+    First to add the default image for the Website, use it as the profile pic for a user. Left-clicked on the image and copy the image address.
+
+    Within the Profile.php model, add a public profileImage() function returning:
+        $imagePath = ($this->image) ? $this->image : 'profile/aFOmOSdyUKrhChyZ9SumEgkTdeo1jgciYq5f3XMp.jpeg';
+
+        return '/storage/' . $imagePath;
+
+    Now on the show.blade.php view, change the profile image src from:
+        src="/storage/{{ $post->image }}"
+    To:
+        src="{{ $post->user->profile->profileImage() }}" 
+
+    Within the index.blade.php view this same needs to be changed for the User Image, as with 
+        the Profile image for the show view.
+
+    However, an issue arises went Editing a new profile. If the Description and URL are added
+    When editing profile, and not the image, a error is produced of:
+        ErrorException
+        Undefined variable: imagePath
+    To fix this, within the update function for the ProfileController change:
+        // UPDATE PROFILE
+        auth()->user()->profile->update(array_merge(
+            //ARRAY MERGE UPDATE IMAGE
+            $data,
+            ['image' => $imagePath]
+        ));
+    To: 
+        // UPDATE PROFILE
+        auth()->user()->profile->update(array_merge(
+            //ARRAY MERGE UPDATE IMAGE
+            $data,
+            $imageArray ?? []
+        ));
+    Plus add the created variable $imageArray to the if statement:
+        $imageArray = ['image' => $imagePath];
+
+    This functionality makes it so no image is selected upon clicking the Edit Profile link. In turn
+    if the image isn't changed, the profile image stays the same.
+        
+
 
 
 
