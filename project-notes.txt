@@ -682,6 +682,8 @@ NOTE: Installation process from video of said project.
     schema. Within the terminal run the following script:
         php artisan migrate:fresh
 
+
+
 34. Automatically Creating a Profile Using Model Events- 3:00:00
     When a user is created at this point, an exception is thrown:
         Facade\Ignition\Exceptions\ViewException
@@ -709,7 +711,48 @@ NOTE: Installation process from video of said project.
     Change the source image attribute to:
         src="{{ $user->profile->image }}" 
 
+
+
+35. Auto Create Image Wrap-up- 3:05:40
+    To add the profile image and username link to a post, within show.blade.php change 
+    the h1 tag to:
+        <div class="d-flex align-items-center">
+                    <div class="pr-3">
+                        <!-- PROFILE IMAGE -->
+                        <img 
+                            src="/storage/{{ $post->user->profile->image }}" 
+                            alt="profile image" 
+                            class="rounded-circle w-100"
+                            style="max-width: 40px"
+                        >
+                    </div>
     
+                    <div>
+                        <!-- POST USERNAME -->
+                        <div 
+                            class="font-weight-bold"> 
+                            <a href="/profile/{{ $post->user->id }}">
+                                {{ $post->user->username }}
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <hr>
+    PLUS: Add the button anchor tag to post username anchor tag.
+
+    Add the username link to the post caption by changing the caption p tag to:
+        <!-- POST CAPTION -->
+                <p> 
+                    <span 
+                        class="font-weight-bold"> 
+                        <a href="/profile/{{ $post->user->id }}">
+                            {{ $post->user->username }}
+                        </a>
+                    </span>
+                    {{ $post->caption }}
+                </p>
+
 
 
     

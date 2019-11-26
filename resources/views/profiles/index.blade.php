@@ -29,9 +29,9 @@
 
                 <!-- ADD NEW POST -->
                 {{-- can directive for Adding a New Post only by the user --}}
-            @can('update', $user->profile)
-                <a href="/p/create">Add New Post</a>
-            @endcan
+                @can('update', $user->profile)
+                    <a href="/p/create">Add New Post</a>
+                @endcan
 
             </div>
 
@@ -60,11 +60,13 @@
 
             <!-- PROFILE URL -->
             <div><a href="#">{{ $user->profile->url }}</a></div>
+
         </div> 
     </div>
 
     <!-- CREATED POSTS from ADD NEW POSTS -->
     <div class="row pt-5"> 
+        {{-- LOOP THROUGH POSTS AND RENDER --}}
         @foreach($user->posts as $post)
         <div class="col-4 pb-4">
          <a href="/p/{{ $post->id }}">

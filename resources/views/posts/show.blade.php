@@ -12,11 +12,45 @@
 
         <!-- RIGHT COLUMN -->
         <div class="col-4">
-            <!-- USER NAME -->
-            <h3>{{ $post->user->username }}</h3>
-            
-            <!-- POST CAPTION -->
-            <p>{{ $post->caption }}</p>
+            <div>
+                <div class="d-flex align-items-center">
+                    <div class="pr-3">
+                        <!-- PROFILE IMAGE -->
+                        <img 
+                            src="/storage/{{ $post->user->profile->image }}" 
+                            alt="profile image" 
+                            class="rounded-circle w-100"
+                            style="max-width: 40px"
+                        >
+                    </div>
+    
+                    <div>
+                        <!-- POST USERNAME -->
+                        <div 
+                            class="font-weight-bold"> 
+                            <a href="/profile/{{ $post->user->id }}">
+                                {{ $post->user->username }}
+                            </a>
+
+                            <!-- FOLLOW/UNFOLLOW BUTTON -->
+                            <a href="#" class="pl-3">Follow</a>
+                        </div>
+                    </div>
+                </div>
+
+                <hr>
+                
+                <!-- POST CAPTION -->
+                <p> 
+                    <span 
+                        class="font-weight-bold"> 
+                        <a href="/profile/{{ $post->user->id }}">
+                            {{ $post->user->username }}
+                        </a>
+                    </span>
+                    {{ $post->caption }}
+                </p>
+            </div>
         </div>
     </div>
 </div>
