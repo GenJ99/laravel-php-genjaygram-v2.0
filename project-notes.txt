@@ -949,8 +949,22 @@ NOTE: Installation process from video of said project.
             }
             });
 
+
+
 40. Calculating Followers Count and Following Count- 3:46:33    
     To calculate the Followers, in the index view change the hard code to:
         {{ $user->profile->followers->count() }}
     And to change the Following, change the hard code to:
         {{ $user->following->count() }}
+
+
+
+41. Laravel Telescope- 3:48:55
+    This is a tool used for debugging assistance within the laravel framework. 
+    To install run the following scripts:
+        composer require laravel/telescope
+        php artisan telescope:install
+        php artisan migrate
+    Now when running the server to debug, at root type telescope to run the tool.
+    
+        
