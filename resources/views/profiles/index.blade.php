@@ -55,10 +55,10 @@
                 <div class="pr-5"><strong>{{ $user->posts->count() }}</strong> posts</div>
 
                 <!-- FOLLOWERS -->
-                <div class="pr-5"><strong>23k</strong> followers</div>
+                <div class="pr-5"><strong>{{ $user->profile->followers->count() }}</strong> followers</div>
 
                 <!-- FOLLOWING -->
-                <div class="pr-5"><strong>212</strong> followings</div>
+                <div class="pr-5"><strong>{{ $user->following->count() }}</strong> followings</div>
             </div>
 
             <!-- PROFILE TITLE -->

@@ -948,3 +948,9 @@ NOTE: Installation process from video of said project.
                 window.location = "/login";
             }
             });
+
+40. Calculating Followers Count and Following Count- 3:46:33    
+    To calculate the Followers, in the index view change the hard code to:
+        {{ $user->profile->followers->count() }}
+    And to change the Following, change the hard code to:
+        {{ $user->following->count() }}
