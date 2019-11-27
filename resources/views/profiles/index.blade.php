@@ -29,7 +29,7 @@
                     <h1 class="h4">{{$user->username}}</h1>
     
                     <!-- FOLLOW/UNFOLLOW BUTTON VUE COMPONENT-->
-                <follow-button user-id="{{ $user->id }}"></follow-button>
+                    <follow-button user-id="{{ $user->id }}"></follow-button>
                 </div>
 
                 <!-- ADD NEW POST -->

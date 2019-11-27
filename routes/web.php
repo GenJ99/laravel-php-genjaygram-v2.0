@@ -18,7 +18,7 @@ Route::get('/', function () {
 Auth::routes();
 
 // Route for the Follow/Unfollow button
-Route::post('follow/{user}', 'FollowsController@store');
+Route::post('/follow/{user}', 'FollowsController@store');
 
 // IMPORTANT NOTE: Variable routes should come after static routes. For instance if
 // the /p/create route comes after the /p/{post} route, the create route will throw

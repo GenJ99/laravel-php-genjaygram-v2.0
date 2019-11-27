@@ -16,6 +16,11 @@ class Profile extends Model
         return '/storage/' . $imagePath;
     }
 
+    // Has belongs to many relationship with the User model
+    public function followers() {
+        return $this->belongsToMany(User::class);
+    }
+
     // Adds the relationship of Profile to User
     public function user() {
         return $this->belongsTo(User::class);

@@ -797,66 +797,106 @@ NOTE: Installation process from video of said project.
 
 
 
-    37. Follow/UnFollow Profiles Using a Vue.js Component
-        Within the index view add a button underneath the username:
-            <div class="d-flex align-items-center pb-3">
-                <!-- USER NAME -->
-                <h1 class="h4">{{$user->username}}</h1>
+37. Follow/UnFollow Profiles Using a Vue.js Component
+    Within the index view add a button underneath the username:
+        <div class="d-flex align-items-center pb-3">
+            <!-- USER NAME -->
+            <h1 class="h4">{{$user->username}}</h1>
 
-                <!-- FOLLOW/UNFOLLOW BUTTON -->
-                <button class="btn btn-primary ml-4">Follow</button>
-            </div>
+            <!-- FOLLOW/UNFOLLOW BUTTON -->
+            <button class="btn btn-primary ml-4">Follow</button>
+        </div>
 
-        Now in order to have the follow/unfollow functionality, the Vue.js framework will be 
-        utilized. For the resources\js\components\Example.vue, change the component to FollowButton.vue. 
-        With this in the resources\js\app.js file change the Vue.component to:
-            Vue.component(
-                "follow-button",
-                require("./components/FollowButton.vue").default
-                );
+    Now in order to have the follow/unfollow functionality, the Vue.js framework will be 
+    utilized. For the resources\js\components\Example.vue, change the component to FollowButton.vue. 
+    With this in the resources\js\app.js file change the Vue.component to:
+        Vue.component(
+            "follow-button",
+            require("./components/FollowButton.vue").default
+            );
 
-        Now change the button in the index view to:
-            <!-- FOLLOW/UNFOLLOW BUTTON VUE COMPONENT-->
-            <follow-button></follow-button>
-        And in the FollowButton component change the template to:
-            <div>
-                <!-- FOLLOW/UNFOLLOW BUTTON -->
-                <button class="btn btn-primary ml-4">Follow</button>
-            </div>
+    Now change the button in the index view to:
+        <!-- FOLLOW/UNFOLLOW BUTTON VUE COMPONENT-->
+        <follow-button></follow-button>
+    And in the FollowButton component change the template to:
+        <div>
+            <!-- FOLLOW/UNFOLLOW BUTTON -->
+            <button class="btn btn-primary ml-4">Follow</button>
+        </div>
 
-        NOW in the terminal run the following to have the app watch changes to the comtent:
-            npm run development -- --watch
+    NOW in the terminal run the following to have the app watch changes to the content:
+        npm run development -- --watch
 
-        Within the button add a click event of @click="followUser, and a test script for the event of:
-            methods: {
-                followUser() {
-                    alert("inside");
-                }
+    Within the button add a click event of @click="followUser, and a test script for the event of:
+        methods: {
+            followUser() {
+                alert("inside");
             }
+        }
 
-        Inside the web.php routes add:
-            // Route for the Follow/Unfollow button
-                Route::post('follow/{user}', function() {
-                return ['success'];
-        And change the alert for the Vue followUser() method to utilize the axios package:
-            axios.post("/follow/1").then(response => {
-            alert(response.data);
-      });
+    Inside the web.php routes add:
+        // Route for the Follow/Unfollow button
+            Route::post('follow/{user}', function() {
+            return ['success'];
+    And change the alert for the Vue followUser() method to utilize the axios package:
+        axios.post("/follow/1").then(response => {
+        alert(response.data);
+    });
 
-        Inside the terminal add a new controller for the Follows button:
-            php artisan make:controller FollowsController
-        Change the Web route to:
-            Route::post('follow/{user}', 'FollowsController@store');
-        Add a prop to the index view FollowButton:
-            user-id="{{ $user->id }}
-        Add the prop to the Vue file script:
-            props: ["userId"],
-        And change the axios.post to:
-            axios.post("/follow/" + this.userId)
-        Now create a store() method for the FollowsController and test the return value:
-            return $user->username; 
+    Inside the terminal add a new controller for the Follows button:
+        php artisan make:controller FollowsController
+    Change the Web route to:
+        Route::post('follow/{user}', 'FollowsController@store');
+    Add a prop to the index view FollowButton:
+        user-id="{{ $user->id }}
+    Add the prop to the Vue file script:
+        props: ["userId"],
+    And change the axios.post to:
+        axios.post("/follow/" + this.userId)
+    Now create a store($User user) method for the FollowsController and test 
+    the return value:
+        return $user->username;
+
+    NOTE: Won't show the alert message. Seems to be an issue with the front and 
+    backend communicating with each other. The issue that's displayed in the 
+    developer console is:
+        app.js:279 POST http://127.0.0.1:8000/follow/1 500 (Internal Server Error)
+            dispatchXhrRequest @ app.js:279
+            xhrAdapter @ app.js:118
+            dispatchRequest @ app.js:726
+            Promise.then (async)
+            request @ app.js:528
+            Axios.<computed> @ app.js:553
+            wrap @ app.js:1071
+            followUser @ app.js:1855
+            invokeWithErrorHandling @ app.js:39158
+            invoker @ app.js:39483
+            original._wrapper @ app.js:44836
+        app.js:653 Uncaught (in promise) Error: Request failed with status code 500
+            at createError (app.js:653)
+            at settle (app.js:899)
+            at XMLHttpRequest.handleLoad (app.js:166)
 
 
 
+38. Many-to-Many Relationship- 3:31:28
+    In order to have a many-to-many relationship so a user can follow many users, and
+    many users can follow the one user, a pivot table needs to be created.
+    To do this in the terminal make a migration:
+        php artisan make:migration creates_profile_user_pivot_table --create 
+        profile_user
+    Within the new table, for the profile_user schema add:
+        $table->unsignedBigInteger('profile_id');
+        $table->unsignedBigInteger('user_id');
+    Now in the terminal migrate the database:
+        php artisan migrate
 
+    Within the User model add the following() function of:
+        public function following() {
+            return $this->belongsToMany(Profile::class);
+        }
+    Now do the same with the Profile model
+        public function followers() {
+            return $this->belongsToMany(User::class);
+        }
     
