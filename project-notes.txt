@@ -879,7 +879,7 @@ NOTE: Installation process from video of said project.
 
 
 
-38. Many-to-Many Relationship- 3:31:28
+38. Many-to-Many Relationship: Setup Migration and Models- 3:31:28
     In order to have a many-to-many relationship so a user can follow many users, and
     many users can follow the one user, a pivot table needs to be created.
     To do this in the terminal make a migration:
@@ -899,4 +899,52 @@ NOTE: Installation process from video of said project.
         public function followers() {
             return $this->belongsToMany(User::class);
         }
-    
+
+39. Many-to-Many Relationship: Controllers, index, and FollowButton- 3:35:12
+    Within the the store function for the Follows Controller, change to:
+        return auth()->user()->following()->toggle($user->profile);
+    Within the FollowButton change the followUsers() callback the a console.log ot see 
+    a attacked[] and detached[] array.
+
+    Within terminal run:
+        $user= User::find(1);
+        $user->following or $user->fresh()following
+    To see the pivot of user_id associated with profile_ids the user is following
+
+    In order to see within the browser an indication of a user following another user:  
+        In the index view, add to the Follows-Button:
+            follows="{{ $follows }}"
+        Within the ProfilesController change the index function to:
+            $follows = (auth()->user()) ? auth()->user()->following->contains($user->id) : false;
+
+            return view('profiles.index', compact('user', 'follows'));
+        
+        Inside FollowButton.vue, for add data:
+            data: function() {
+                return {
+                status: this.follows
+                };
+            },
+        Plus in this file add the 'follows' prop.
+        Add a v-text="buttonText" attribute to the button element(plus erase the Button text).
+        Now under scripts add computed with a buttonText method of:
+            computed: {
+                buttonText() {
+                return (this.status) ? 'Unfollow' : "Follow";
+                }
+            }
+        Also to toggle the status in the UI, for followUser() add:
+            this.status = ! this.status;
+
+        However a error happens with the user is signed out and tries to follow someone. This is
+        due to following being null. To fix this add a constructor to the FollowsController:
+            public function __construct() {
+                $this->middleware('auth');
+            }
+        With this add a catch block to the folloerUser() method for the FollowButton.vue:
+            .catch(errors => {
+            // REDIRECT USER TO LOGIN
+            if (errors.response.status == 401) {
+                window.location = "/login";
+            }
+            });
