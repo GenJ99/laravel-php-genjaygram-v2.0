@@ -3,27 +3,72 @@
 namespace App\Http\Controllers;
 
 use App\User;
+use Illuminate\Filesystem\Cache;
 use Illuminate\Http\Request;
 use Intervention\Image\Facades\Image;
 
 class ProfilesController extends Controller
 {
     public function index(User $user)
-    {   
+    {
         // CHECK FOLLOWING/UNFOLLOWING STATUS
         $follows = (auth()->user()) ? auth()->user()->following->contains($user->id) : false;
 
-        return view('profiles.index', compact('user', 'follows'));
+        // POST COUNT CACHE
+        $postCount = Cache::remember(
+            // KEY
+            'count.posts.' . $user->id,
+            // TIME
+            now()->addSeconds(30),
+            // CALLBACK
+            function () use ($user) {
+                return $user->posts->count();
+            }
+        );
+
+        // FOLLOWERS COUNT CACHE
+        $followersCount = Cache::remember(
+            // KEY
+            'count.posts.' . $user->id,
+            // TIME
+            now()->addSeconds(30),
+            // CALLBACK
+            function () use ($user) {
+                return $user->profile->followers->count();
+            }
+        );
+
+        // FOLLOWING COUNT CACHE
+        $followingCount = Cache::remember(
+            // KEY
+            'count.posts.' . $user->id,
+            // TIME
+            now()->addSeconds(30),
+            // CALLBACK
+            function () use ($user) {
+                return $user->following->count();
+            }
+        );
+
+        return view('profiles.index', compact(
+            'user',
+            'follows',
+            'postCount',
+            'followersCount',
+            'followingCount'
+        ));
     }
 
-    public function edit(User $user) {
+    public function edit(User $user)
+    {
         //AUTHORIZE UPDATE POLICY
         $this->authorize('update', $user->profile);
 
         return view('profiles.edit', compact('user'));
     }
 
-    public function update(User $user) {
+    public function update(User $user)
+    {
         // AUTHORIZE UPDATE POLICY
         $this->authorize('update', $user->profile);
 

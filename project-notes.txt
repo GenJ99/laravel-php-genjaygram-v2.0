@@ -1062,3 +1062,68 @@ NOTE: Installation process from video of said project.
 
     Also to clear all the entries within Telescope, run the script:
         php artisan telescope:clear
+
+
+
+45. Make Use of Cache for Expensive Query
+    For this example, instead of the posts, followers, and following loading to the
+    page, they will be loaded from the cache.
+
+    POSTS:
+        Within the Index view for profiles, change the POSTS COUNT variable to:
+            $postCount
+        Within the ProfilesConroller add to the index method:
+            $postCount = $user->posts->count();
+
+        Within the Index view for profiles, change the FOLLOWERS COUNT variable to:
+            $followersCount
+        Within the ProfilesConroller add to the index method:
+            // POST COUNT CACHE
+            $postCount = Cache::remember(
+                // KEY
+                'count.posts.' . $user->id,
+                // TIME
+                now()->addSeconds(30),
+                // CALLBACK
+                function () use ($user) {
+                    return $user->posts->count();
+                }
+            );
+
+        Within the Index view for profiles, change the FOLLOWING COUNT variable to:
+            // FOLLOWERS COUNT CACHE
+            $followersCount = Cache::remember(
+                // KEY
+                'count.posts.' . $user->id,
+                // TIME
+                now()->addSeconds(30),
+                // CALLBACK
+                function () use ($user) {
+                    return $user->profile->followers->count();
+                }
+            );
+        Within the ProfilesConroller add to the index method:
+            // FOLLOWING COUNT CACHE
+            $followingCount = Cache::remember(
+                // KEY
+                'count.posts.' . $user->id,
+                // TIME
+                now()->addSeconds(30),
+                // CALLBACK
+                function () use ($user) {
+                    return $user->following->count();
+                }
+            );
+
+        NOW with the ProfilesController, change the return for the index method to:
+            return view('profiles.index', compact(
+                'user',
+                'follows',
+                'postCount',
+                'followersCount',
+                'followingCount'
+            ));
+
+        NOTE: Needed to run script:
+            composer require league/flysystem
+        NOTE: Still not working, will have to research.
