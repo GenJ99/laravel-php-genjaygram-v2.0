@@ -971,7 +971,7 @@ NOTE: Installation process from video of said project.
     
         
 
-42. Showing Posts from Profiles The User is Following- 3:51:44
+42. Showing Posts from Profiles the User is Following- 3:51:44
     Instead of showing the 404 error code upon login to the home route, the route will be
     changed to show all posts from people the user is following in sequential order.
 
@@ -1030,3 +1030,20 @@ NOTE: Installation process from video of said project.
         <a href="/profile/{{ $post->user->id }}">
             <img src="/storage/{{ $post->image }}" alt="post img" class="w-100">
         </a>
+
+43. Pagination with Eloquent- 4:01:03
+    Show 5 post and click next to show the next 5 and so on...
+
+    To do this in the PostsController change the index method $posts variable to:
+        // GRAB ALL POSTS FROM FOLLOWED USERS
+        // PAGINATE BY 5
+        $posts = Post::whereIn('user_id', $users)->latest()->paginate(5);
+
+    Now to add the 5 next Button, in the post index view, add after the foreach
+    loop:
+        <!-- PAGINAGE 5 MORE POSTS -->
+        <div class="row">
+            <div class="col-12 d-flex justify-content-center">
+                {{ $posts->links() }}
+            </div>
+        </div>

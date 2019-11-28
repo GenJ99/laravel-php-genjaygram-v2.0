@@ -17,11 +17,12 @@ class PostsController extends Controller
 
     public function index()
     {
-        // GRAB ALL USERS
+        // GRAB ALL USERS BEING FOLLOWED
         $users = auth()->user()->following()->pluck('profiles.user_id');
 
-        // GRAB ALL POSTS FROM USERS AT LATEST
-        $posts = Post::whereIn('user_id', $users)->latest()->get();
+        // GRAB ALL POSTS FROM FOLLOWED USERS
+        // PAGINATE BY 5
+        $posts = Post::whereIn('user_id', $users)->latest()->paginate(5);
 
         // RETURN POSTS
         return view('posts.index', compact('posts'));
