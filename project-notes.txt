@@ -1031,6 +1031,8 @@ NOTE: Installation process from video of said project.
             <img src="/storage/{{ $post->image }}" alt="post img" class="w-100">
         </a>
 
+
+
 43. Pagination with Eloquent- 4:01:03
     Show 5 post and click next to show the next 5 and so on...
 
@@ -1047,3 +1049,16 @@ NOTE: Installation process from video of said project.
                 {{ $posts->links() }}
             </div>
         </div>
+
+
+
+44. N + 1 Problem & Solution- 4:03:25
+    Within the queries of telescope there is an issue of a limit by one when the 
+    index view of followed posts is rendered. To fix this within the index method
+    for the PostsController, change the $posts variable to:
+        // GRAB ALL POSTS FROM FOLLOWED USERS
+        // PAGINATE BY 5
+        $posts = Post::whereIn('user_id', $users)->with('user')->latest()->paginate(5);
+
+    Also to clear all the entries within Telescope, run the script:
+        php artisan telescope:clear
