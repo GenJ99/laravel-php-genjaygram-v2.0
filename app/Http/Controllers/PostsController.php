@@ -10,15 +10,30 @@ class PostsController extends Controller
 {
 
     // Constructor sends user to login page upon typing url route if not sigined in.
-    public function __construct() {
+    public function __construct()
+    {
         $this->middleware('auth');
     }
 
-    public function create() {
+    public function index()
+    {
+        // GRAB ALL USERS
+        $users = auth()->user()->following()->pluck('profiles.user_id');
+
+        // GRAB ALL POSTS FROM USERS AT LATEST
+        $posts = Post::whereIn('user_id', $users)->latest()->get();
+
+        // RETURN POSTS
+        return view('posts.index', compact('posts'));
+    }
+
+    public function create()
+    {
         return view('posts.create');
     }
 
-    public function store() {
+    public function store()
+    {
         // DATA VALIDATION
         $data = request()->validate([
             'caption' => 'required',
@@ -31,7 +46,7 @@ class PostsController extends Controller
 
         // IMAGE RESIZING
         $image = Image::make(public_path("storage/{$imagePath}"))->fit(1200, 1200);
-        $image-> save();
+        $image->save();
 
         auth()->user()->posts()->create([
             'caption' => $data['caption'],
@@ -43,7 +58,8 @@ class PostsController extends Controller
     }
 
     // SHOW A POST
-    public function show(\App\Post $post) {
+    public function show(\App\Post $post)
+    {
         return view('posts.show', compact('post'));
     }
 }
