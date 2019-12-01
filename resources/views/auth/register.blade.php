@@ -50,7 +50,7 @@
 
                                 @error('username')
                                     <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $username }}</strong>
+                                        <strong>{{ $username ?? '' }}</strong>
                                     </span>
                                 @enderror
                             </div>

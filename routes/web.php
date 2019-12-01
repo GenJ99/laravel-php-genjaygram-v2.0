@@ -11,7 +11,14 @@
 |
 */
 
+use App\Mail\NewUserWelcomeMail;
+
 Auth::routes();
+
+// Temporary route to see email user template:
+Route::get('email', function () {
+    return new NewUserWelcomeMail();
+});
 
 // Route for the Follow/Unfollow button
 Route::post('/follow/{user}', 'FollowsController@store');
@@ -23,7 +30,7 @@ Route::get('/', 'PostsController@index');
 // the /p/create route comes after the /p/{post} route, the create route will throw
 // a 404 error and never be accessed. 
 Route::get('/p/create', 'PostsController@create');
-Route::post('/p', 'PostsController@store'); 
+Route::post('/p', 'PostsController@store');
 Route::get('/p/{post}', 'PostsController@show');
 
 

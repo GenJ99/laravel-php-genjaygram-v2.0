@@ -1065,7 +1065,7 @@ NOTE: Installation process from video of said project.
 
 
 
-45. Make Use of Cache for Expensive Query
+45. Make Use of Cache for Expensive Query- 4:05:21
     For this example, instead of the posts, followers, and following loading to the
     page, they will be loaded from the cache.
 
@@ -1127,3 +1127,46 @@ NOTE: Installation process from video of said project.
         NOTE: Needed to run script:
             composer require league/flysystem
         NOTE: Still not working, will have to research.
+        FIXED: For Cache Package have:
+            use Illuminate\Support\Facades\Cache;
+        And not:
+            use Illuminate\Filesystem\Cache;
+
+
+
+46. Sending Emails to New Registered Users- 4:11:44
+    The next feature is sending a email to a user who signs up to GenJayGram.
+    
+    First signup to a service such as mailtrap for a debugging smtp option.
+    
+    Next open the .env file and within the file there is a setup already for mailtrap to be used. The 
+    keys for MAIL_DRIVER, MAIL_HOST, and MAIL_PORT are already set up, in turn the MAIL_PASSWORD
+    and MAIL_USERNAME (plus APP_NAME optional) will be completed with the ones used within 
+    the "Demo inbox" settings for the mailtrap account.
+
+    Within the terminal create a mailable by running the script of:
+        php artisan make:mail NewUserWelcomeMail -m emails.welcome-email
+    This creates a mail directory for the new file of app\Mail\NewUserWelcomeMail.php,
+    and within views a new directory of emails for a file of 
+    resources\views\emails\welcome-email.blade.php
+
+    To see the new welcome-email.blade.php template, in side the web.php routes file, add:
+        // Temporary route to see email user template:
+        Route::get('email', function () {
+            return new NewUserWelcomeMail();
+        });
+        
+    Now to setup the email to send it upon a new user account beoing created, inside the created 
+    function callback, add:
+        Mail::to($user->email)->send(new NewUserWelcomeMail());
+
+    However, if you try to register a user after the process above, the registration won't 
+    go through. This is due to when the .env file is changed, the server needs to be rebooted.
+
+    Finally to redirect to another page from home after registration, change the register controller.
+    For this application change it to root.
+
+    NOTE: Email not working, error: 
+        Swift_TransportException
+        Expected response code 250 but got code "530", with message "530 5.7.1 Authentication required"
+

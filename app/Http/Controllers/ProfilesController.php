@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\User;
-use Illuminate\Filesystem\Cache;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Http\Request;
 use Intervention\Image\Facades\Image;
 
